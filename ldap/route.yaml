@@ -1,0 +1,17 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ldap-admin
+  labels:
+    app: ldap
+spec:
+  to:
+    kind: Service
+    name: ldap
+    weight: 100
+  port:
+    targetPort: https-admin
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
