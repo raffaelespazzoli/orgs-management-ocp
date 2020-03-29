@@ -7,30 +7,6 @@ data:
   database.ldif: |
     version: 1
 
-    dn: cn=Online Retail Banking,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Online Retail Banking
-    member: uid=alice,ou=Users,dc=example,dc=com
-
-    dn: cn=Lending,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Lending
-    member: uid=alice,ou=Users,dc=example,dc=com
-
-    dn: dc=example,dc=com
-    objectclass: top
-    objectclass: domain
-    dc: example
-
-    dn: cn=Retail Banking,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Retail Banking
-    member: cn=Mobile Banking,cn=Retail Banking,ou=Groups,dc=example,dc=com
-    member: cn=Online Retail Banking,ou=Groups,dc=example,dc=com
-
     dn: ou=Users,dc=example,dc=com
     objectClass: organizationalUnit
     objectClass: top
@@ -41,63 +17,151 @@ data:
     objectClass: top
     ou: Groups
 
+    dn: uid=john,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: john
+    sn: admin
+    uid: john
+
+    dn: uid=trevor,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: trevor
+    sn: admin
+    uid: trevor
+    
+    dn: uid=eric,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: eric
+    sn: admin
+    uid: eric 
+    
+    dn: uid=erin,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: erin
+    sn: admin
+    uid: erin     
+
+    dn: uid=vanessa,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: vanessa
+    sn: admin
+    uid: vanessa 
+    
+    dn: uid=mary,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: mary
+    sn: admin
+    uid: mary 
+    
+    dn: uid=julia,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: julia
+    sn: admin
+    uid: julia     
+
+    dn: uid=matt,ou=Users,dc=example,dc=com
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: inetOrgPerson
+    objectClass: top
+    cn: matt
+    sn: admin
+    uid: matt 
+
+    # retail banking
+
+    dn: cn=Online Retail Banking,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Online Retail Banking
+    member: uid=trevor,ou=Users,dc=example,dc=com
+
+    dn: cn=Mobile Banking,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Mobile Banking
+    member: uid=john,ou=Users,dc=example,dc=com
+
+    dn: cn=Retail Banking,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Retail Banking
+    member: cn=Mobile Banking,cn=Retail Banking,ou=Groups,dc=example,dc=com
+    member: cn=Online Retail Banking,ou=Groups,dc=example,dc=com    
+
+    # corporate baking
+
+    dn: cn=Online Corporate Banking,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Online Corporate Banking
+    member: uid=eric,ou=Users,dc=example,dc=com
+
     dn: cn=Backoffice,ou=Groups,dc=example,dc=com
     objectClass: groupOfNames
     objectClass: top
     cn: Backoffice
-    member: uid=alice,ou=Users,dc=example,dc=com
-
-    dn: cn=Investing,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Investing
-    member: uid=alice,ou=Users,dc=example,dc=com
-
-    dn: cn=Core Banking,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Core Banking
-    member: cn=Checking Accounts,cn=Core Banking,ou=Groups,dc=example,dc=com
-    member: cn=Investing,cn=Core Banking,ou=Groups,dc=example,dc=com
-    member: cn=Lending,cn=Core Banking,ou=Groups,dc=example,dc=com
-    member: cn=Mortgages,cn=Core Banking,ou=Groups,dc=example,dc=com
+    member: uid=erin,ou=Users,dc=example,dc=com
 
     dn: cn=Corporate Baking,ou=Groups,dc=example,dc=com
     objectClass: groupOfNames
     objectClass: top
     cn: Corporate Baking
     member: cn=Backoffice,cn=Corporate Baking,ou=Groups,dc=example,dc=com
-    member: cn=Online Corporate Banking,ou=Groups,dc=example,dc=com
+    member: cn=Online Corporate Banking,ou=Groups,dc=example,dc=com    
+
+    # core banking
+
+    dn: cn=Lending,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Lending
+    member: uid=mary,ou=Users,dc=example,dc=com
+
+    dn: cn=Investing,ou=Groups,dc=example,dc=com
+    objectClass: groupOfNames
+    objectClass: top
+    cn: Investing
+    member: uid=matt,ou=Users,dc=example,dc=com
 
     dn: cn=Checking Accounts,ou=Groups,dc=example,dc=com
     objectClass: groupOfNames
     objectClass: top
     cn: Checking Accounts
-    member: uid=alice,ou=Users,dc=example,dc=com
-
-    dn: cn=Online Corporate Banking,ou=Groups,dc=example,dc=com
-    objectClass: groupOfNames
-    objectClass: top
-    cn: Online Corporate Banking
-    member: uid=alice,ou=Users,dc=example,dc=com
+    member: uid=vanessa,ou=Users,dc=example,dc=com
 
     dn: cn=Mortgages,ou=Groups,dc=example,dc=com
     objectClass: groupOfNames
     objectClass: top
     cn: Mortgages
-    member: uid=alice,ou=Users,dc=example,dc=com
+    member: uid=julia,ou=Users,dc=example,dc=com
 
-    dn: uid=alice,ou=Users,dc=example,dc=com
-    objectClass: organizationalPerson
-    objectClass: person
-    objectClass: inetOrgPerson
-    objectClass: top
-    cn: Alice
-    sn: In Chains
-    uid: alice
-
-    dn: cn=Mobile Banking,ou=Groups,dc=example,dc=com
+    dn: cn=Core Banking,ou=Groups,dc=example,dc=com
     objectClass: groupOfNames
     objectClass: top
-    cn: Mobile Banking
-    member: uid=alice,ou=Users,dc=example,dc=com
+    cn: Core Banking
+    member: cn=Checking Accounts,ou=Groups,dc=example,dc=com
+    member: cn=Investing,ou=Groups,dc=example,dc=com
+    member: cn=Lending,ou=Groups,dc=example,dc=com
+    member: cn=Mortgages,ou=Groups,dc=example,dc=com

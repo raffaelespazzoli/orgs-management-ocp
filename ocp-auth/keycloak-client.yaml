@@ -1,0 +1,14 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: ocp-client
+  labels:
+    app: ocp
+spec:
+  realmSelector:
+     matchLabels:
+      app: ocp
+  client:
+    id: ocp-client
+    clientId: ocp-client
+    secret: ocp-secret
