@@ -8,16 +8,19 @@ data:
     version: 1
 
     dn: ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalUnit
     objectClass: top
     ou: Users
 
     dn: ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: organizationalUnit
     objectClass: top
     ou: Groups
 
     dn: uid=john,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -26,7 +29,14 @@ data:
     sn: admin
     uid: john
 
+
+    dn: uid=john,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin
+
     dn: uid=trevor,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -34,8 +44,14 @@ data:
     cn: trevor
     sn: admin
     uid: trevor
-    
+
+    dn: uid=trevor,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin
+
     dn: uid=eric,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -43,17 +59,29 @@ data:
     cn: eric
     sn: admin
     uid: eric 
-    
+
+    dn: uid=eric,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
+
     dn: uid=erin,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
     objectClass: top
     cn: erin
     sn: admin
-    uid: erin     
+    uid: erin  
+
+    dn: uid=erin,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
 
     dn: uid=vanessa,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -61,8 +89,14 @@ data:
     cn: vanessa
     sn: admin
     uid: vanessa 
-    
+
+    dn: uid=vanessa,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
+
     dn: uid=mary,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -70,17 +104,29 @@ data:
     cn: mary
     sn: admin
     uid: mary 
-    
+
+    dn: uid=mary,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
+
     dn: uid=julia,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
     objectClass: top
     cn: julia
     sn: admin
-    uid: julia     
+    uid: julia 
+
+    dn: uid=julia,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
 
     dn: uid=matt,ou=Users,dc=example,dc=com
+    changetype: add
     objectClass: organizationalPerson
     objectClass: person
     objectClass: inetOrgPerson
@@ -89,21 +135,29 @@ data:
     sn: admin
     uid: matt 
 
+    dn: uid=matt,ou=Users,dc=example,dc=com
+    changetype: modify
+    add: userPassword
+    userPassword: admin    
+
     # retail banking
 
     dn: cn=Online Retail Banking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Online Retail Banking
     member: uid=trevor,ou=Users,dc=example,dc=com
 
     dn: cn=Mobile Banking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Mobile Banking
     member: uid=john,ou=Users,dc=example,dc=com
 
     dn: cn=Retail Banking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Retail Banking
@@ -113,18 +167,21 @@ data:
     # corporate baking
 
     dn: cn=Online Corporate Banking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Online Corporate Banking
     member: uid=eric,ou=Users,dc=example,dc=com
 
     dn: cn=Backoffice,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Backoffice
     member: uid=erin,ou=Users,dc=example,dc=com
 
     dn: cn=Corporate Baking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Corporate Baking
@@ -134,30 +191,35 @@ data:
     # core banking
 
     dn: cn=Lending,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Lending
     member: uid=mary,ou=Users,dc=example,dc=com
 
     dn: cn=Investing,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Investing
     member: uid=matt,ou=Users,dc=example,dc=com
 
     dn: cn=Checking Accounts,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Checking Accounts
     member: uid=vanessa,ou=Users,dc=example,dc=com
 
     dn: cn=Mortgages,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Mortgages
     member: uid=julia,ou=Users,dc=example,dc=com
 
     dn: cn=Core Banking,ou=Groups,dc=example,dc=com
+    changetype: add
     objectClass: groupOfNames
     objectClass: top
     cn: Core Banking

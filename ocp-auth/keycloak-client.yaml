@@ -12,3 +12,6 @@ spec:
     id: ocp-client
     clientId: ocp-client
     secret: ocp-secret
+    rootUrl: ${auth_callback}
+    redirectUris:
+      - /oidckeycloak

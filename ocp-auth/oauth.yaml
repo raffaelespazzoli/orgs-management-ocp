@@ -20,7 +20,7 @@ spec:
         - name
         email:
         - email
-      issuer: https://keycloak-keycloak-operator.apps.cluster-a16c.sandbox456.opentlc.com/auth/realms/ocp/.well-known/openid-configuration
+      issuer: ${keycloak_route}/auth/realms/ocp
       # ExtraScopes []string `json:"extraScopes,omitempty"`
 
       # // extraAuthorizeParameters are any custom parameters to add to the authorize request.

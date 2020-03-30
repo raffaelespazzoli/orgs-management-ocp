@@ -29,7 +29,9 @@ spec:
             - containerPort: 389
               name: openldap
           args:
-            - '--copy-service'    
+            - '--copy-service'   
+            - '--loglevel'
+            - 'debug'
           env:
             - name: LDAP_LOG_LEVEL
               # value: "256"
