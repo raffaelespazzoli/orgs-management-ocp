@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: authn-filter
+spec:
+  workloadLabels:
+    istio: ingressgateway
+  filters:
+  - filterConfig:
+      http_service:
+        server_uri:
+          uri: http://oauthproxy-service.default.svc.cluster.local
+          cluster: outbound|4180||oauthproxy-service.default.svc.cluster.local
+          timeout: 1.5s
+        authorizationRequest:
+          allowedHeaders:
+            patterns:
+            - exact: "cookie"
+            - exact: "x-forwarded-access-token"
+            - exact: "x-forwarded-user"
+            - exact: "x-forwarded-email"
+            - exact: "authorization"
+            - exact: "x-forwarded-proto"
+            - exact: "proxy-authorization"
+            - exact: "user-agent"
+            - exact: "x-forwarded-host"
+            - exact: "from"
+            - exact: "x-forwarded-for"
+            - exact: "accept"
+            - prefix: "x-forwarded"
+            - prefix: "x-auth-request"
+        authorizationResponse:
+          allowedClientHeaders:
+            patterns:
+            - exact: "location"
+            - exact: "proxy-authenticate"
+            - exact: "set-cookie"
+            - exact: "authorization"
+            - exact: "www-authenticate"
+            - prefix: "x-forwarded"
+            - prefix: "x-auth-request"
+          allowedUpstreamHeaders:
+            patterns:
+            - exact: "location"
+            - exact: "proxy-authenticate"
+            - exact: "set-cookie"
+            - exact: "authorization"
+            - exact: "www-authenticate"
+            - prefix: "x-forwarded"
+            - prefix: "x-auth-request"
+    filterName: envoy.ext_authz
+    filterType: HTTP
+    listenerMatch:
+      portNumber: 443
+      listenerType: GATEWAY

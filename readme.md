@@ -43,3 +43,21 @@ oc -n openshift-config create configmap ocp-ca-bundle --from-file=/tmp/ca.crt
 export oauth_patch=$(cat ./ocp-auth/oauth.yaml | envsubst | yq .)
 oc patch OAuth.config.openshift.io cluster -p "${oauth_patch}" --type merge
 ```
+
+
+## RH-ServiceMesh - RH-SSO integration
+
+Assuming you deployed istio in `istio-system` and bookinfo in `bookinfo`, this will create an OIDC authetication rule for the mesh.
+
+```shell
+export istio_ingress=https://$(oc get route istio-ingressgateway -n istio-system -o jsonpath='{.spec.host}')
+export keycloak_route=$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
+cat ./istio/keycloak-client.yaml | envsubst | oc apply -f - -n keycloak-operator
+oc apply -f ./istio/service.yaml -n bookinfo
+cat ./istio/deployment.yaml | envsubst | oc apply -f - -n bookinfo
+oc apply -f ./istio/virtual-service.yaml -n bookinfo
+oc apply -f ./istio/envoy-filter.yaml -n bookinfo
+oc apply -f ./istio/policy.yaml -n bookinfo
+```
+
+

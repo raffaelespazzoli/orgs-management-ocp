@@ -1,0 +1,17 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: istio
+  labels:
+    app: istio
+spec:
+  realmSelector:
+     matchLabels:
+      app: ocp
+  client:
+    id: istio-client
+    clientId: istio-client
+    secret: istio-secret
+    rootUrl: http://${istio_ingress}/oauth2
+    redirectUris:
+      - /callback
