@@ -1,0 +1,228 @@
+apiVersion: maistra.io/v1
+kind: ServiceMeshControlPlane
+metadata:
+  name: basic-install
+  namespace: istio-system
+spec:
+  istio:
+    global:
+      multitenant: false
+      proxy:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi
+    gateways:
+      istio-egressgateway:
+        autoscaleEnabled: false
+      istio-ingressgateway:
+        autoscaleEnabled: false
+        ior_enabled: false
+      oauth-ingressgateway:
+        enabled: true
+        autoscaleEnabled: false
+        additionalContainers:
+        - args:
+          - --provider=keycloak
+          - --provider-display-name="Keycloak"
+          - --client-id=istio-client
+          - --client-secret=istio-secret
+          - --email-domain=example.com
+          # - --pass-access-token=true
+          # - --pass-authorization-header=true
+          # - --set-authorization-header=true
+          - --oidc-issuer-url=https://${keycloak_route}/auth/realms/ocp
+          - --login-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/auth
+          - --redeem-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/token
+          - --validate-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/userinfo
+          - --http-address=0.0.0.0:8081
+          # - --cookie-expire=4h0m0s
+          # - --whitelist-domain=".${keycloak_route}"
+          # - --cookie-domain=.${keycloak_route}
+          - --standard-logging=true
+          - --auth-logging=true
+          - --request-logging=true
+          # - --skip-provider-button=true
+          - --upstream=http://localhost:8080
+          - --ssl-insecure-skip-verify=true
+          env:
+            # - name: OAUTH2_PROXY_CLIENT_ID
+            #   value: istio-client
+            # - name: OAUTH2_PROXY_CLIENT_SECRET
+            #   value: istio-secret
+            # docker run -ti --rm python:3-alpine python -c 'import secrets,base64; print(base64.b64encode(base64.b64encode(secrets.token_bytes(16))));'
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              value: cookie-secret
+            - name: OAUTH2_PROXY_COOKIE_DOMAIN
+              value: .${keycloak_route}
+          image: quay.io/pusher/oauth2_proxy:v5.1.0
+          imagePullPolicy: Always
+          name: oauth2-proxy
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+        sds:
+          # If true, ingress gateway fetches credentials from SDS server to handle TLS connections.
+          enabled: false
+          # SDS server that watches kubernetes secrets and provisions credentials to ingress gateway.
+          # This server runs in the same pod as ingress gateway.
+          image: node-agent-k8s
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2000m
+              memory: 1024Mi
+      
+        labels:
+          app: oauth-ingressgateway
+          istio: ingressgateway
+        # autoscaleEnabled: false
+        # autoscaleMin: 1
+        # autoscaleMax: 5
+        # # specify replicaCount when autoscaleEnabled: false
+        # # replicaCount: 1
+        # rollingMaxSurge: 100%
+        # rollingMaxUnavailable: 25%
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 128Mi
+        #   limits:
+        #     cpu: 2000m
+        #     memory: 1024Mi
+        # cpu:
+        #   targetAverageUtilization: 80
+        loadBalancerIP: ""
+        loadBalancerSourceRanges: []
+        externalIPs: []
+        serviceAnnotations: {}
+        podAnnotations: {}
+        type: ClusterIP
+        #externalTrafficPolicy: Local #change to Local to preserve source IP or Cluster for default behaviour or leave commented out
+        ports:
+          ## You can add custom gateway ports
+          # Note that AWS ELB will by default perform health checks on the first port
+          # on this list. Setting this to the health check port will ensure that health
+          # checks always work. https://github.com/istio/istio/issues/12503
+        - port: 15020
+          targetPort: 15020
+          name: status-port
+        - port: 80
+          targetPort: 8080
+          name: http2         
+        - port: 443
+          targetPort: 8443
+          name: https
+        # Example of a port to add. Remove if not needed
+        ### PORTS FOR UI/metrics #####
+        ## Disable if not needed
+          # This is the port where sni routing happens
+        - port: 15443
+          targetPort: 15443
+          name: tls
+        - port: 8081
+          targetPort: 8081
+          name: oauth-http2           
+        #### MESH EXPANSION PORTS  ########
+        # Pilot and Citadel MTLS ports are enabled in gateway - but will only redirect
+        # to pilot/citadel if global.meshExpansion settings are enabled.
+        # Delete these ports if mesh expansion is not enabled, to avoid
+        # exposing unnecessary ports on the web.
+        # You can remove these ports if you are not using mesh expansion
+        meshExpansionPorts:
+        - port: 15011
+          targetPort: 15011
+          name: tcp-pilot-grpc-tls
+        - port: 15004
+          targetPort: 15004
+          name: tcp-mixer-grpc-tls
+        - port: 8060
+          targetPort: 8060
+          name: tcp-citadel-grpc-tls
+        - port: 853
+          targetPort: 853
+          name: tcp-dns-tls
+        ####### end MESH EXPANSION PORTS ######
+        ##############
+        secretVolumes:
+        - name: ingressgateway-certs
+          secretName: istio-ingressgateway-certs
+          mountPath: /etc/istio/ingressgateway-certs
+        - name: ingressgateway-ca-certs
+          secretName: istio-ingressgateway-ca-certs
+          mountPath: /etc/istio/ingressgateway-ca-certs
+        ### Advanced options ############
+      
+        # Ports to explicitly check for readiness. If configured, the readiness check will expect a
+        # listener on these ports. A comma separated list is expected, such as "80,443".
+        #
+        # Warning: If you do not have a gateway configured for the ports provided, this check will always
+        # fail. This is intended for use cases where you always expect to have a listener on the port,
+        # such as 80 or 443 in typical setups.
+        # applicationPorts: ""
+      
+        # env:
+        #   # A gateway with this mode ensures that pilot generates an additional
+        #   # set of clusters for internal services but without Istio mTLS, to
+        #   # enable cross cluster routing.
+        #   ISTIO_META_ROUTER_MODE: "sni-dnat"
+        # nodeSelector: {}
+        # tolerations: []
+      
+        # Specify the pod anti-affinity that allows you to constrain which nodes
+        # your pod is eligible to be scheduled based on labels on pods that are
+        # already running on the node rather than based on labels on nodes.
+        # There are currently two types of anti-affinity:
+        #    "requiredDuringSchedulingIgnoredDuringExecution"
+        #    "preferredDuringSchedulingIgnoredDuringExecution"
+        # which denote "hard" vs. "soft" requirements, you can define your values
+        # in "podAntiAffinityLabelSelector" and "podAntiAffinityTermLabelSelector"
+        # correspondingly.
+        # For example:
+        # podAntiAffinityLabelSelector:
+        # - key: security
+        #   operator: In
+        #   values: S1,S2
+        #   topologyKey: "kubernetes.io/hostname"
+        # This pod anti-affinity rule says that the pod requires not to be scheduled
+        # onto a node if that node is already running a pod with label having key
+        # "security" and value "S1".
+        # podAntiAffinityLabelSelector: []
+        # podAntiAffinityTermLabelSelector: []              
+    mixer:
+      policy:
+        autoscaleEnabled: false
+      telemetry:
+        autoscaleEnabled: false
+        resources:
+          requests:
+            cpu: 100m
+            memory: 1Gi
+          limits:
+            cpu: 500m
+            memory: 4Gi
+    pilot:
+      autoscaleEnabled: false
+      traceSampling: 100
+      resources:
+          requests:
+            cpu: 100m
+            memory: 1Gi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+    kiali:
+      enabled: true
+    grafana:
+      enabled: true
+    tracing:
+      enabled: true
+      jaeger:
+        template: all-in-one
+    threeScale:
+      enabled: false
