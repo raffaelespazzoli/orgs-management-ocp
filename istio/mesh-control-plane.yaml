@@ -26,28 +26,33 @@ spec:
         autoscaleEnabled: false
         additionalContainers:
         - args:
-          - --provider=keycloak
-          - --provider-display-name="Keycloak"
+          - --provider=oidc
+          # - --provider-display-name="Keycloak"
           - --client-id=istio-client
           - --client-secret=istio-secret
-          - --email-domain=example.com
+          - --email-domain=*
+          - --insecure-oidc-allow-unverified-email=true	
           # - --pass-access-token=true
           # - --pass-authorization-header=true
           # - --set-authorization-header=true
           - --oidc-issuer-url=https://${keycloak_route}/auth/realms/ocp
-          - --login-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/auth
-          - --redeem-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/token
-          - --validate-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/userinfo
+          # - --login-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/auth
+          # - --redeem-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/token
+          # - --validate-url=https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/userinfo
           - --http-address=0.0.0.0:8081
+          - --https-address=0.0.0.0:8444
           # - --cookie-expire=4h0m0s
           # - --whitelist-domain=".${keycloak_route}"
-          # - --cookie-domain=.${keycloak_route}
+          - --cookie-domain=oauth-ingressgateway-istio-system.apps.cluster-4cac.sandbox456.opentlc.com
           - --standard-logging=true
           - --auth-logging=true
           - --request-logging=true
-          # - --skip-provider-button=true
-          - --upstream=http://localhost:8080
+          - --skip-provider-button=true
+          - --upstream=http://localhost:80
           - --ssl-insecure-skip-verify=true
+          - --ssl-upstream-insecure-skip-verify=true
+          - --tls-cert-file=/etc/oauth2-proxy/certs/tls.crt
+          - --tls-key-file=/etc/oauth2-proxy/certs/tls.key
           env:
             # - name: OAUTH2_PROXY_CLIENT_ID
             #   value: istio-client
@@ -64,6 +69,9 @@ spec:
           ports:
             - containerPort: 8081
               protocol: TCP
+          volumeMounts:
+            - name: oauth2-proxy-tls
+              mountPath: /etc/oauth2-proxy/certs    
         sds:
           # If true, ingress gateway fetches credentials from SDS server to handle TLS connections.
           enabled: false
@@ -100,7 +108,8 @@ spec:
         loadBalancerIP: ""
         loadBalancerSourceRanges: []
         externalIPs: []
-        serviceAnnotations: {}
+        serviceAnnotations: 
+          service.beta.openshift.io/serving-cert-secret-name: oauth2-proxy-tls
         podAnnotations: {}
         type: ClusterIP
         #externalTrafficPolicy: Local #change to Local to preserve source IP or Cluster for default behaviour or leave commented out
@@ -127,7 +136,10 @@ spec:
           name: tls
         - port: 8081
           targetPort: 8081
-          name: oauth-http2           
+          name: oauth-http2
+        - port: 8444
+          targetPort: 8444
+          name: oauth-https                     
         #### MESH EXPANSION PORTS  ########
         # Pilot and Citadel MTLS ports are enabled in gateway - but will only redirect
         # to pilot/citadel if global.meshExpansion settings are enabled.
@@ -156,6 +168,9 @@ spec:
         - name: ingressgateway-ca-certs
           secretName: istio-ingressgateway-ca-certs
           mountPath: /etc/istio/ingressgateway-ca-certs
+        - name: oauth2-proxy-tls
+          secretName: oauth2-proxy-tls
+          mountPath: /etc/oauth2-proxy/certs          
         ### Advanced options ############
       
         # Ports to explicitly check for readiness. If configured, the readiness check will expect a

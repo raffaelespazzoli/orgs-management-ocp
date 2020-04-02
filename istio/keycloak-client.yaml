@@ -12,6 +12,6 @@ spec:
     id: istio-client
     clientId: istio-client
     secret: istio-secret
-    rootUrl: http://${oauth_ingress}/oauth2
+    rootUrl: https://${oauth_ingress}/oauth2
     redirectUris:
       - /callback

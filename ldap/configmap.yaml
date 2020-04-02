@@ -28,6 +28,7 @@ data:
     cn: john
     sn: admin
     uid: john
+    mail: jhon.admin@example.com
 
 
     dn: uid=john,ou=Users,dc=example,dc=com
@@ -44,6 +45,7 @@ data:
     cn: trevor
     sn: admin
     uid: trevor
+    mail: trevor.admin@example.com
 
     dn: uid=trevor,ou=Users,dc=example,dc=com
     changetype: modify
@@ -58,7 +60,8 @@ data:
     objectClass: top
     cn: eric
     sn: admin
-    uid: eric 
+    uid: eric
+    mail: eric.admin@example.com
 
     dn: uid=eric,ou=Users,dc=example,dc=com
     changetype: modify
@@ -73,7 +76,8 @@ data:
     objectClass: top
     cn: erin
     sn: admin
-    uid: erin  
+    uid: erin
+    mail: erin.admin@example.com
 
     dn: uid=erin,ou=Users,dc=example,dc=com
     changetype: modify
@@ -88,7 +92,8 @@ data:
     objectClass: top
     cn: vanessa
     sn: admin
-    uid: vanessa 
+    uid: vanessa
+    mail: vanessa.admin@example.com
 
     dn: uid=vanessa,ou=Users,dc=example,dc=com
     changetype: modify
@@ -103,7 +108,8 @@ data:
     objectClass: top
     cn: mary
     sn: admin
-    uid: mary 
+    uid: mary
+    mail: mary.admin@example.com 
 
     dn: uid=mary,ou=Users,dc=example,dc=com
     changetype: modify
@@ -118,7 +124,8 @@ data:
     objectClass: top
     cn: julia
     sn: admin
-    uid: julia 
+    uid: julia
+    mail: julia.admin@example.com 
 
     dn: uid=julia,ou=Users,dc=example,dc=com
     changetype: modify
@@ -133,7 +140,8 @@ data:
     objectClass: top
     cn: matt
     sn: admin
-    uid: matt 
+    uid: matt
+    mail: matt.admin@example.com 
 
     dn: uid=matt,ou=Users,dc=example,dc=com
     changetype: modify
