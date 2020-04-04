@@ -29,6 +29,9 @@ export ldap_integration_id=$(oc exec -n keycloak-operator keycloak-0 -- /opt/jbo
 echo created ldap integration $ldap_integration_id
 
 oc exec -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -s name=ldap-groups -s providerId=group-ldap-mapper -s providerType=org.keycloak.storage.ldap.mappers.LDAPStorageMapper -s parentId=${ldap_integration_id} -s 'config."groups.dn"=["ou=Groups,dc=example,dc=com"]' -s 'config."group.name.ldap.attribute"=["cn"]' -s 'config."group.object.classes"=["groupOfNames"]' -s 'config."preserve.group.inheritance"=["true"]' -s 'config."membership.ldap.attribute"=["member"]' -s 'config."membership.attribute.type"=["DN"]' -s 'config."groups.ldap.filter"=[]' -s 'config.mode=["READ_ONLY"]' -s 'config."user.roles.retrieve.strategy"=["LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"]' -s 'config."mapped.group.attributes"=[]' -s 'config."drop.non.existing.groups.during.sync"=["false"]' -s 'config.roles=["admins"]' -s 'config.groups=["admins-group"]' -s 'config.group=[]' -s 'config.preserve=["true"]' -s 'config.membership=["member"]' -s 'config.membership.user.ldap.attribute=["uid"]'
+
+{"config":{"groups.dn":["ou=Groups,dc=example,dc=com"],"group.name.ldap.attribute":["cn"],"group.object.classes":["groupOfNames"],"preserve.group.inheritance":["true"],"ignore.missing.groups":["false"],"membership.ldap.attribute":["member"],"membership.attribute.type":["DN"],"membership.user.ldap.attribute":["uid"],"groups.ldap.filter":[],"mode":["READ_ONLY"],"user.roles.retrieve.strategy":["LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"],"memberof.ldap.attribute":["memberOf"],"mapped.group.attributes":[],"drop.non.existing.groups.during.sync":["false"]},"name":"group-mapper","providerId":"group-ldap-mapper","providerType":"org.keycloak.storage.ldap.mappers.LDAPStorageMapper","parentId":"3f909a0d-b2d1-46f9-8677-c9f838be17bb"}
+
 ```
 
 ## OCP - RH-SSO integration
@@ -53,8 +56,13 @@ here are the [instructions](https://github.com/raffaelespazzoli/openshift-enable
 export keycloak_route=$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
 cat ./istio/mesh-control-plane.yaml | envsubst | oc apply -f - -n istio-system
 oc create route reencrypt oauth-ingressgateway --service oauth-ingressgateway --port 8444 -n istio-system
+oc create route reencrypt oauth-ingressgateway --service oauth-ingressgateway --port 8444 -n bookinfo
+export oauth_ingress=$(oc get route oauth-ingressgateway -n bookinfo -o jsonpath='{.spec.host}')
 export oauth_ingress=$(oc get route oauth-ingressgateway -n istio-system -o jsonpath='{.spec.host}')
 cat ./istio/keycloak-client.yaml | envsubst | oc apply -f - -n keycloak-operator
+cat ./istio/mesh-control-plane.yaml | envsubst | oc apply -f - -n istio-system
+# this does not work, see: https://github.com/istio/istio/issues/22733
+cat ./istio/policy.yaml | envsubst | oc apply -f - -n bookinfo
 echo https://$oauth_ingress/productpage
 ```
 

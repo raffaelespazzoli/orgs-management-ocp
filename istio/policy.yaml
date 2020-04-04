@@ -1,0 +1,14 @@
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: ingress-auth-policy
+spec:
+  targets:
+  - name: productpage
+  origins:
+  - jwt:
+      issuer: "https://${keycloak_route}/auth/realms/ocp"
+      #jwksUri: "https://${keycloak_route}/auth/realms/ocp/protocol/openid-connect/certs"
+      forwardOriginalToken: true
+      #jwks: {"keys":[{"kid":"11Vu7ONgJTLI0kq0J7pKFSVMazGClm1RTCXe3pzyi4A","kty":"RSA","alg":"RS256","use":"sig","n":"xjpgRPurf3l5KRG64K0nNn6vXeE3OyXPVU1RqDkMQ_kIn5eESS4jrURDrJHIh_5OBkrZrTSV53FZPr1p7bMK9H_8aK5mMuOy2VkjQJMcvxGrKcfn9KWjGouILsf0YtbdoBMGke_9pYSi_nKlVjat5MTNfYZvwIVSHefymHRC8WbDLhaN_BsoDmwE-stfeIygv0UslVaeQT_ic4AEfdiICHAdii4U5m0-oATTx-eYWPq4McwBlt4j8dokRQP3hAlzSRfuy8tA4YWGfsCt4qwV2ZuxjYTLsVAEGSws7MNaA2njNpol-5FRn9MRqNyu59mi1f_5mhGKyb4XMNc9ltI9DQ","e":"AQAB","x5c":["MIIClTCCAX0CBgFxJpGRUTANBgkqhkiG9w0BAQsFADAOMQwwCgYDVQQDDANvY3AwHhcNMjAwMzI5MTM1MTQ2WhcNMzAwMzI5MTM1MzI2WjAOMQwwCgYDVQQDDANvY3AwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGOmBE+6t/eXkpEbrgrSc2fq9d4Tc7Jc9VTVGoOQxD+Qifl4RJLiOtREOskciH/k4GStmtNJXncVk+vWntswr0f/xormYy47LZWSNAkxy/Easpx+f0paMai4gux/Ri1t2gEwaR7/2lhKL+cqVWNq3kxM19hm/AhVId5/KYdELxZsMuFo38GygObAT6y194jKC/RSyVVp5BP+JzgAR92IgIcB2KLhTmbT6gBNPH55hY+rgxzAGW3iPx2iRFA/eECXNJF+7Ly0DhhYZ+wK3irBXZm7GNhMuxUAQZLCzsw1oDaeM2miX7kVGf0xGo3K7n2aLV//maEYrJvhcw1z2W0j0NAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAJC3gzbaDpRnxn/SPYNarNUgU0Jwg268gMjFjqfUwofAtiWA4kQ8rziUVQtl1UKqwlqYYx3sAlvbSffHJxxX/HheuxBHVYQh3oKYRBps5l2oNI5lFfKRpd90+Zw1PvQGgyoAshTi6FwxIvPcsWAhJliDzcejgTlW0uESNvilCBD7YS4syO1X2lfCNTcYzcwJNg2JqP2NDGoVe7tT7gB8U5GZ5yhaR23KioZ2U/tgfaUzk+Gq/x/SbmU6qgYSnpyomqutd7EmtAMcz8wQYx6DHrDbJYITQ6JFgpUhkYIw0c3SaWxhFSz1ZZYKW5h0ItmB1WViWW2mIAgCarfNZ4TkiC0="],"x5t":"CzFELjmM_R1cl1egGlNePO3tMsI","x5t#S256":"BGFsg3He72y7iVi2L7WfXaEBcVIBVAbrOLUnPnXgNkk"}]}
+  principalBinding: USE_ORIGIN
