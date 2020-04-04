@@ -56,11 +56,8 @@ here are the [instructions](https://github.com/raffaelespazzoli/openshift-enable
 export keycloak_route=$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
 cat ./istio/mesh-control-plane.yaml | envsubst | oc apply -f - -n istio-system
 oc create route reencrypt oauth-ingressgateway --service oauth-ingressgateway --port 8444 -n istio-system
-oc create route reencrypt oauth-ingressgateway --service oauth-ingressgateway --port 8444 -n bookinfo
-export oauth_ingress=$(oc get route oauth-ingressgateway -n bookinfo -o jsonpath='{.spec.host}')
 export oauth_ingress=$(oc get route oauth-ingressgateway -n istio-system -o jsonpath='{.spec.host}')
 cat ./istio/keycloak-client.yaml | envsubst | oc apply -f - -n keycloak-operator
-cat ./istio/mesh-control-plane.yaml | envsubst | oc apply -f - -n istio-system
 # this does not work, see: https://github.com/istio/istio/issues/22733
 cat ./istio/policy.yaml | envsubst | oc apply -f - -n bookinfo
 echo https://$oauth_ingress/productpage
