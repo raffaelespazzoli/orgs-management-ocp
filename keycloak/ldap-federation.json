@@ -1,0 +1,146 @@
+{
+  "name":"ocp-ldap-provider",
+  "providerId":"ldap",
+  "providerType":"org.keycloak.storage.UserStorageProvider",
+  "parentId":"ocp",
+  "config":{
+     "pagination":[
+        "true"
+     ],
+     "fullSyncPeriod":[
+        "300"
+     ],
+     "searchScope":[
+        "1"
+     ],
+     "useTruststoreSpi":[
+        "ldapsOnly"
+     ],
+     "connectionPooling":[
+        "true"
+     ],
+     "usersDn":[
+        "ou=Users,dc=example,dc=com"
+     ],
+     "cachePolicy":[
+        "DEFAULT"
+     ],
+     "priority":[
+        "1"
+     ],
+     "userObjectClasses":[
+        "inetOrgPerson, organizationalPerson"
+     ],
+     "bindCredential":[
+        "admin"
+     ],
+     "bindDn":[
+        "cn=admin,dc=example,dc=com"
+     ],
+     "usernameLDAPAttribute":[
+        "uid"
+     ],
+     "changedSyncPeriod":[
+        "-1"
+     ],
+     "rdnLDAPAttribute":[
+        "uid"
+     ],
+     "vendor":[
+        "other"
+     ],
+     "editMode":[
+        "READ_ONLY"
+     ],
+     "uuidLDAPAttribute":[
+        "uid"
+     ],
+     "allowKerberosAuthentication":[
+        "false"
+     ],
+     "connectionUrl":[
+        "ldap://ldap.ldap.svc:389"
+     ],
+     "syncRegistrations":[
+        "false"
+     ],
+     "authType":[
+        "simple"
+     ],
+     "batchSizeForSync":[
+        "1000"
+     ],
+     "enabled":[
+        "true"
+     ],
+     "evictionDay":[
+
+     ],
+     "evictionHour":[
+
+     ],
+     "evictionMinute":[
+
+     ],
+     "maxLifespan":[
+
+     ],
+     "importEnabled":[
+        "true"
+     ],
+     "startTls":[
+
+     ],
+     "customUserSearchFilter":[
+
+     ],
+     "validatePasswordPolicy":[
+        "false"
+     ],
+     "trustEmail":[
+        "false"
+     ],
+     "connectionPoolingAuthentication":[
+
+     ],
+     "connectionPoolingDebug":[
+
+     ],
+     "connectionPoolingInitSize":[
+
+     ],
+     "connectionPoolingMaxSize":[
+
+     ],
+     "connectionPoolingPrefSize":[
+
+     ],
+     "connectionPoolingProtocol":[
+
+     ],
+     "connectionPoolingTimeout":[
+
+     ],
+     "connectionTimeout":[
+
+     ],
+     "readTimeout":[
+
+     ],
+     "serverPrincipal":[
+
+     ],
+     "keyTab":[
+
+     ],
+     "kerberosRealm":[
+
+     ],
+     "debug":[
+        "false"
+     ],
+     "useKerberosForPasswordAuthentication":[
+        "false"
+     ]
+  }
+}
