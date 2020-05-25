@@ -1,29 +1,18 @@
-# apiVersion: config.openshift.io/v1
-# kind: OAuth
-# metadata:
-#   name: cluster
-spec:
-  identityProviders:
-  - name: oidckeycloak 
-    mappingMethod: claim 
-    type: OpenID
-    openID:
-      clientID: ocp-client
-      ca: 
-        name: ocp-ca-bundle 
-      clientSecret:
-        name: ocp-secret
-      claims: 
-        preferredUsername:
-        - preferred_username
-        name:
-        - name
-        email:
-        - email
-      issuer: ${keycloak_route}/auth/realms/ocp
-      # ExtraScopes []string `json:"extraScopes,omitempty"`
-
-      # // extraAuthorizeParameters are any custom parameters to add to the authorize request.
-      # // +optional
-      # ExtraAuthorizeParameters map[string]string `json:"extraAuthorizeParameters,omitempty"`      
+name: oidckeycloak 
+mappingMethod: claim 
+type: OpenID
+openID:
+  clientID: ocp-client
+  ca: 
+    name: ocp-ca-bundle 
+  clientSecret:
+    name: ocp-secret
+  claims: 
+    preferredUsername:
+    - preferred_username
+    name:
+    - name
+    email:
+    - email
+  issuer: https://${keycloak_route}/auth/realms/ocp    
  

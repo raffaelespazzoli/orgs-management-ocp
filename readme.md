@@ -21,13 +21,9 @@ oc create route reencrypt keycloak --port 8443 --service keycloak -n keycloak-op
 
 ```shell
 export admin_password=$(oc get secret credential-ocp-keycloak -n keycloak-operator -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d)
-
 oc exec -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password ${admin_password} --config /tmp/kcadm.config
-
 export ldap_integration_id=$(cat ./keycloak/ldap-federation.json | envsubst | oc exec -i -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -f - -i)
-
 echo created ldap integration $ldap_integration_id
-
 cat ./keycloak/role-mapper.json | envsubst | oc exec -i -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -f -
 ```
 
@@ -41,8 +37,52 @@ oc apply -f ./ocp-auth/secret.yaml
 oc get secrets -n openshift-ingress-operator router-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/ca.crt
 oc -n openshift-config create configmap ocp-ca-bundle --from-file=/tmp/ca.crt
 export oauth_patch=$(cat ./ocp-auth/oauth.yaml | envsubst | yq .)
-oc patch OAuth.config.openshift.io cluster -p "${oauth_patch}" --type merge
+oc patch OAuth.config.openshift.io cluster -p '[{"op": "add", "path": "/spec/identityProviders/-", "value": '"${oauth_patch}"' }]' --type json
 ```
+
+## OCP - RH-SSO Group Sync
+
+### Deploy the group sync operator
+
+```shell
+oc new-project group-sync-operator
+oc apply -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/crds/redhatcop.redhat.io_groupsyncs_crd.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/service_account.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/clusterrole.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/clusterrole_binding.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/role.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/role_binding.yaml
+oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/operator.yaml
+```
+
+### Deploy group sync logic
+
+```shell
+export keycloak_route=$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
+export admin_password=$(oc get secret credential-ocp-keycloak -n keycloak-operator -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d)
+oc create secret generic keycloak-group-sync --from-literal=username=admin --from-literal=password=${admin_password} -n keycloak-operator
+cat ./group-sync/groupsync.yaml | envsubst | oc apply -f -
+```
+
+## Deploy the namespace configurations
+
+### Deploy namespace-configuration-operator
+
+```shell
+oc new-project namespace-configuration-operator
+helm repo add namespace-configuration-operator https://redhat-cop.github.io/namespace-configuration-operator
+helm install namespace-configuration-operator namespace-configuration-operator/namespace-configuration-operator --namespace namespace-configuration-operator
+```
+
+## Deploy namespace configuration
+
+```shell
+```
+
+
+
+
+# Extras
 
 ## RH-ServiceMesh - RH-SSO integration
 
