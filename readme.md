@@ -1,4 +1,30 @@
-# Organization Management Demo for OpenShift
+# Team Onboarding Demo for OpenShift
+
+This demo has the purpose to demonstrate how it is possible to build a fully automated end-to-end team onboarding process for OpenShift.
+The main problems an onboarding process needs to take care of are the following:
+
+1. Mapping of the corporate organization to OpenShift RBAC model. This is going to be addressed with [RH-SSO]() in this demo.
+2. synchronization of groups. This is going to be addressed with the [group-sync-operator]() in this demo.
+3. configuration of namespaces. This is going to be addressed with the [namespace-configuration-operator]() in this demo.
+
+## Demo Scenario
+
+A corporate LDAP container the org hierarchy with the following levels: LOB, BU. Informal levels that are not mapped in the corporate LDAP are dev team and application.
+Requirements:
+
+1. each application needs to be provisioned with 4 SDLC environments with the following naming convention: <app>-build, <app>-dev, <app>-qa, <app>-prod
+2. every one in the dev team should have `view` access to the all the environments of all the applications in that dev team
+3. every one on specifically assigned to an app should have `edit` access to the SDLC environments of that app.
+4. the build environment is the only one where builds can run.
+5. builds need to talk only to the corporate nexus (nexus.mycorp.com) and to the corporate gitlab (gitlab.mycorp.com). Any other communication must be stopped.
+6. the dev and qa environments can establish connections with the internal corporate networks (10.11.0.0) and the corporate nexus for image pulling.
+7. the prod environment can only talk to the prod network (10.12.0.0) and the pci network (10.13.0.0) and the corporate nexus for image pulling.
+8. each project will receive a default network policy configuration, by which pods are allowed to communicate only within teh namespace and receive connections from the router pods. Owner of those namespaces are allowed to add more network policy rules.
+9. the -build projects will receive very limited quotas.
+10. the -dev and -qa projects will share a multiproject quota that the developer can allocate based on their needs. The multiproject quota can be chosen at project creation among three T-shirt sizes.
+11. the -prod project will receive its own quota, again the quota will be chosen at project creation.
+12. dev, qa and prod project will be assigned egress IPs (we assume the [egressip-ipam-operator](https://github.com/redhat-cop/egressip-ipam-operator) is installed).
+
 
 ## LDAP installation
 
