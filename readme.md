@@ -19,7 +19,7 @@ Requirements:
 5. builds need to talk only to the corporate nexus (nexus.mycorp.com) and to the corporate gitlab (gitlab.mycorp.com). Any other communication must be stopped.
 6. the dev and qa environments can establish connections with the internal corporate networks (10.11.0.0) and the corporate nexus for image pulling.
 7. the prod environment can only talk to the prod network (10.12.0.0) and the pci network (10.13.0.0) and the corporate nexus for image pulling.
-8. each project will receive a default network policy configuration, by which pods are allowed to communicate only within teh namespace and receive connections from the router pods. Owner of those namespaces are allowed to add more network policy rules.
+8. each project will receive a default network policy configuration, by which pods are allowed to communicate only within the namespace and receive connections from the router pods. Owner of those namespaces are allowed to add more network policy rules.
 9. the -build projects will receive very limited quotas.
 10. the -dev and -qa projects will share a multiproject quota that the developer can allocate based on their needs. The multiproject quota can be chosen at project creation among three T-shirt sizes.
 11. the -prod project will receive its own quota, again the quota will be chosen at project creation.
@@ -103,14 +103,12 @@ helm install namespace-configuration-operator namespace-configuration-operator/n
 ## Deploy namespace configuration
 
 ```shell
+oc apply -f ./namespace-configuration
 ```
 
+## Extras
 
-
-
-# Extras
-
-## RH-ServiceMesh - RH-SSO integration
+### RH-ServiceMesh - RH-SSO integration
 
 Assuming you deployed istio in `istio-system` and bookinfo in `bookinfo`, this will create an OIDC authetication rule for the mesh.
 here are the [instructions](https://github.com/raffaelespazzoli/openshift-enablement-exam/tree/master/misc4.0/ServiceMesh).

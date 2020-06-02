@@ -1,0 +1,93 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: build-quota
+spec:
+  labelSelector:
+    matchLabels:
+      type: build
+  templates:  
+    - objectTemplate: | 
+        apiVersion: quota.openshift.io/v1
+        kind: ResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+          namespace {{ .Name }}
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "5" 
+              requests.memory: 5Gi 
+              requests.ephemeral-storage: 5Gi
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: prod-quota-small
+spec:
+  labelSelector:
+    matchLabels:
+      type: run
+      stage: prod
+      size: small
+  templates:  
+    - objectTemplate: | 
+        apiVersion: v1
+        kind: ResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+          namespace {{ .Name }}
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "10" 
+              requests.memory: 10Gi 
+              requests.ephemeral-storage: 10Gi
+---              
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: prod-quota-medium
+spec:
+  labelSelector:
+    matchLabels:
+      type: run
+      stage: prod
+      size: medium
+  templates:     
+    - objectTemplate: | 
+        apiVersion: v1
+        kind: ResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+          namespace {{ .Name }}
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "30" 
+              requests.memory: 30Gi 
+              requests.ephemeral-storage: 30Gi
+---           
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: prod-quota-large
+spec:
+  labelSelector:
+    matchLabels:
+      type: run
+      stage: prod
+      size: large
+  templates:     
+    - objectTemplate: | 
+        apiVersion: v1
+        kind: ResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+          namespace {{ .Name }}
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "50" 
+              requests.memory: 50Gi 
+              requests.ephemeral-storage: 50Gi                                                     

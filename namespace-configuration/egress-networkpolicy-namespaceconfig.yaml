@@ -1,0 +1,74 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: egress-networkpolicy-build-namespaces
+spec:
+  labelSelector:
+    matchLabels:
+      type: build    
+  templates:
+    - objectTemplate: |
+        kind: EgressNetworkPolicy
+        apiVersion: v1
+        metadata:
+          name: build-egress-policy
+          namespace: {{ .Name }}  
+        spec:
+          egress:
+          - type: Allow
+            to:
+              dnsName: nexus.mycorp.com
+          - type: Allow
+            to:
+              dnsName: gitlab.mycorp.com              
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: egress-networkpolicy-non-prod-namespaces
+spec:
+  labelSelector:
+    matchLabels:
+      type: run     
+    matchExpressions:
+      - {key: stage, operator: In, values: [dev,qa]}    
+  templates:
+    - objectTemplate: |
+        kind: EgressNetworkPolicy
+        apiVersion: v1
+        metadata:
+          name: non-prod-egress-policy
+          namespace: {{ .Name }}  
+        spec:
+          egress:
+          - type: Allow
+            to:
+              dnsName: nexus.mycorp.com
+          - type: Allow
+            to:
+              cidrSelector: 10.11.0.0/16                                                                      
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: egress-networkpolicy-prod-namespaces
+spec:
+  labelSelector:
+    matchLabels:
+      type: run
+      stage: prod         
+  templates:
+    - objectTemplate: |
+        kind: EgressNetworkPolicy
+        apiVersion: v1
+        metadata:
+          name: prod-egress-policy
+          namespace: {{ .Name }}  
+        spec:
+          egress:
+          - type: Allow
+            to:
+              dnsName: nexus.mycorp.com
+          - type: Allow
+            to:
+              cidrSelector: 10.13.0.0/16 

@@ -6,12 +6,12 @@ metadata:
     app: ocp
 spec:
   realmSelector:
-     matchLabels:
+    matchLabels:
       app: ocp
   client:
     id: ocp-client
     clientId: ocp-client
     secret: ocp-secret
-    rootUrl: ${auth_callback}
+    rootUrl: https://${auth_callback}
     redirectUris:
       - /oidckeycloak

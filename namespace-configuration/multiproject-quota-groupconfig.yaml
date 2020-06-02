@@ -1,0 +1,87 @@
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupConfig
+metadata:
+  name: app-multiproject-quota-small
+spec:
+  annotationSelector:
+    matchLabels:
+      type: application
+      size: small
+  templates:
+    - objectTemplate: | 
+        apiVersion: quota.openshift.io/v1
+        kind: ClusterResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "10" 
+              requests.memory: 10Gi 
+              requests.ephemeral-storage: 10Gi 
+          selector:
+            labels:
+              matchLabels:
+                app: {{ .Name }}
+                type: run
+              matchExpressions:
+                - {key: stage, operator: In, values: [dev,qa]}
+                apiVersion: redhatcop.redhat.io/v1alpha1
+---                
+kind: GroupConfig
+metadata:
+  name: app-multiproject-quota-medium
+spec:
+  annotationSelector:
+    matchLabels:
+      type: application
+      size: medium
+  templates:
+    - objectTemplate: | 
+        apiVersion: quota.openshift.io/v1
+        kind: ClusterResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "30" 
+              requests.memory: 30Gi 
+              requests.ephemeral-storage: 30Gi 
+          selector:
+            labels:
+              matchLabels:
+                app: {{ .Name }}
+                type: run
+              matchExpressions:
+                - {key: stage, operator: In, values: [dev,qa]}
+---                
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupConfig
+metadata:
+  name: app-multiproject-quota-large
+spec:
+  annotationSelector:
+    matchLabels:
+      type: application
+      size: large
+  templates:
+    - objectTemplate: | 
+        apiVersion: quota.openshift.io/v1
+        kind: ClusterResourceQuota
+        metadata:
+          name: {{ .Name }}-quota
+        spec:
+          quota:
+            hard: 
+              requests.cpu: "50" 
+              requests.memory: 50Gi 
+              requests.ephemeral-storage: 50Gi 
+          selector:
+            labels:
+              matchLabels:
+                app: {{ .Name }}
+                type: run
+              matchExpressions:
+                - {key: stage, operator: In, values: [dev,qa]}                                                    

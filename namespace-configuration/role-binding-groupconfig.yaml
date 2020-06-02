@@ -1,0 +1,121 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupConfig
+metadata:
+  name: role-bindings
+spec:
+  annotationSelector:
+    matchLabels:
+      type: application    
+  templates:
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-admin-build
+          namespace: {{ .Name }}-build
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: admin
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Name }}
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-view-build
+          namespace: {{ .Name }}-build
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: view
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Annotations.hierarchy_parent }}          
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-admin-dev
+          namespace: {{ .Name }}-dev
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: admin-no-build
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Name }}
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-view-dev
+          namespace: {{ .Name }}-dev
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: view
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Annotations.hierarchy_parent }}          
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-admin-qa
+          namespace: {{ .Name }}-qa
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: admin-no-build
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Name }}
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-view-qa
+          namespace: {{ .Name }}-qa
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: view
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Annotations.hierarchy_parent }}          
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-admin-prod
+          namespace: {{ .Name }}-prod
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: admin-no-build
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Name }}
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: {{ .Name }}-view-prod
+          namespace: {{ .Name }}-prod
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: view
+        subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: {{ .Annotations.hierarchy_parent }}                                           
