@@ -5,7 +5,7 @@ metadata:
 spec:
   providers:
     - name: keycloak
-      syncPeriodMinutes: 5
+      syncPeriodMinutes: "0 5 * * *"
       keycloak:
         insecure: true
         realm: ocp

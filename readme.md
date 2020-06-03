@@ -10,7 +10,8 @@ The main problems an onboarding process needs to take care of are the following:
 ## Demo Scenario
 
 A corporate LDAP container the org hierarchy with the following levels: LOB, BU. Informal levels that are not mapped in the corporate LDAP are dev team and application.
-Requirements:
+
+Scenario Requirements:
 
 1. each application needs to be provisioned with 4 SDLC environments with the following naming convention: <app>-build, <app>-dev, <app>-qa, <app>-prod
 2. every one in the dev team should have `view` access to the all the environments of all the applications in that dev team
@@ -34,6 +35,20 @@ oc adm policy add-scc-to-user anyuid -z default -n ldap
 oc apply -f ./ldap -n ldap
 ```
 
+After this step you should be able to connect to the ldap admin UI:
+
+```shell
+echo https://$(oc get route ldap-admin -n ldap -o jsonpath='{.spec.host}')
+```
+
+with "cn=admin,dc=example,dc=com"/admin credentials.
+
+If data has been loaded correclty you should see this situation:
+
+![LDAP Groups](/media/ldap-setup.png)
+
+This represents the situation we might find in a enterprise LDAP and is the starting point of our demo.
+
 ## RH-SSO Installation
 
 ```shell
@@ -52,6 +67,32 @@ export ldap_integration_id=$(cat ./keycloak/ldap-federation.json | envsubst | oc
 echo created ldap integration $ldap_integration_id
 cat ./keycloak/role-mapper.json | envsubst | oc exec -i -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -f -
 ```
+
+After this step, if you should be able to login RH-SSO
+
+```shell
+echo https://$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
+echo admin/${admin_password}
+```
+
+and you should see the following groups
+
+![LDAP Groups](/media/ldap-groups.png)
+
+It may take about 5 minutes for the groups to fully synchronize.
+
+
+## RH-SSO Group Augmentation
+
+In this section we emulate org owners that connect to RH-SSO and organizes their portion of the organization hierarchy by adding the dev team and application layers.
+
+```shell
+./keycloak/group-config.sh
+```
+
+this command will take a while. After executing it, you should see the following:
+
+![Augmented Groups](/media/augmented-groups.png)
 
 ## OCP - RH-SSO integration
 
@@ -72,13 +113,7 @@ oc patch OAuth.config.openshift.io cluster -p '[{"op": "add", "path": "/spec/ide
 
 ```shell
 oc new-project group-sync-operator
-oc apply -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/crds/redhatcop.redhat.io_groupsyncs_crd.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/service_account.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/clusterrole.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/clusterrole_binding.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/role.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/role_binding.yaml
-oc apply -n group-sync-operator -f https://raw.githubusercontent.com/redhat-cop/group-sync-operator/master/deploy/operator.yaml
+oc apply -f ./group-sync/operator.yaml -n group-sync-operator
 ```
 
 ### Deploy group sync logic
@@ -96,14 +131,19 @@ cat ./group-sync/groupsync.yaml | envsubst | oc apply -f -
 
 ```shell
 oc new-project namespace-configuration-operator
-helm repo add namespace-configuration-operator https://redhat-cop.github.io/namespace-configuration-operator
-helm install namespace-configuration-operator namespace-configuration-operator/namespace-configuration-operator --namespace namespace-configuration-operator
+oc apply -f ./namespace-configuration/operator.yaml -n namespace-configuration-operator
 ```
 
 ## Deploy namespace configuration
 
 ```shell
-oc apply -f ./namespace-configuration
+oc apply -f ./namespace-configuration/admin-no-build-role.yaml
+oc apply -f ./namespace-configuration/app-namespace-groupconfig.yaml
+oc apply -f ./namespace-configuration/multiproject-quota-groupconfig.yaml
+oc apply -f ./namespace-configuration/role-binding-groupconfig.yaml
+oc apply -f ./namespace-configuration/egress-networkpolicy-namespaceconfig.yaml
+oc apply -f ./namespace-configuration/networkpolicy-namespaceconfig.yaml
+oc apply -f ./namespace-configuration/quota-namespaceconfig.yaml
 ```
 
 ## Extras

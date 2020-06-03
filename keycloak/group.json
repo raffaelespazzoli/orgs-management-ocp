@@ -1,4 +1,0 @@
-{"name":"authentication_services"}
-
-for $(ca)
-kcadm.sh create groups/51204821-0580-46db-8f2d-27106c6b5ded/children -r demorealm -s name=SubGroup
