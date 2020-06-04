@@ -43,11 +43,14 @@ echo https://$(oc get route ldap-admin -n ldap -o jsonpath='{.spec.host}')
 
 with "cn=admin,dc=example,dc=com"/admin credentials.
 
-If data has been loaded correclty you should see this situation:
+If data has been loaded correctly you should see this situation:
 
 ![LDAP Groups](/media/ldap-setup.png)
 
 This represents the situation we might find in a enterprise LDAP and is the starting point of our demo.
+
+all users with a person's name have `admin` assigned as password.
+all users that start with `dev` have `dev` as password.
 
 ## RH-SSO Installation
 
@@ -125,6 +128,38 @@ oc create secret generic keycloak-group-sync --from-literal=username=admin --fro
 cat ./group-sync/groupsync.yaml | envsubst | oc apply -f -
 ```
 
+After syncing you should see the following situation:
+
+```shell
+oc get groups
+NAME                                         USERS
+Backoffice                                   erin
+Checking Accounts                            vanessa
+Core Banking                                 matt, mary, julia, vanessa
+Corporate Baking                             erin, eric
+Investing                                    matt
+Lending                                      mary
+Mobile Banking                               john
+Mortgages                                    julia
+Online Corporate Banking                     eric
+Online Retail Banking                        dev6, trevor, dev2, dev4, dev8, dev11, dev5, dev1, dev9, dev3, dev7, dev10, dev12
+Retail Banking                               dev6, trevor, dev2, dev4, dev8, dev11, dev5, dev1, dev9, dev3, dev7, dev10, dev12, john
+acquisition-team                             dev6, dev7, dev8, dev9
+alerts-team                                  dev11, dev10
+online-acquisition-credit-score-svc          dev8
+online-acquisition-fraud-detection-kyc-svc   dev9
+online-acquisition-kyc-svc                   dev7
+online-acquisition-login-svc                 dev6
+online-alerts-mobile-notification-svc        dev11
+online-alerts-sms-svc                        dev10
+online-banking-bill-payment-svc              dev4
+online-banking-checking-account-svc          dev2
+online-banking-investment-account-svc        dev3
+online-banking-login-svc                     dev1
+online-banking-money-transfer-svc            dev5
+online-svc-team                              dev5, dev4, dev2, dev3, dev1
+```
+
 ## Deploy the namespace configurations
 
 ### Deploy namespace-configuration-operator
@@ -145,6 +180,12 @@ oc apply -f ./namespace-configuration/egress-networkpolicy-namespaceconfig.yaml
 oc apply -f ./namespace-configuration/networkpolicy-namespaceconfig.yaml
 oc apply -f ./namespace-configuration/quota-namespaceconfig.yaml
 ```
+
+At this point you should see all the projects created:
+
+![Namespaces](/media/namespaces.png)
+
+At this point if you connect as one of the developers, you should see only the assigned project and you should be able to start working.
 
 ## Extras
 

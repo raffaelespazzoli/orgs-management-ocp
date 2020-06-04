@@ -9,7 +9,7 @@ spec:
   templates:
     - objectTemplate: |
         kind: EgressNetworkPolicy
-        apiVersion: v1
+        apiVersion: network.openshift.io/v1
         metadata:
           name: build-egress-policy
           namespace: {{ .Name }}  
@@ -35,7 +35,7 @@ spec:
   templates:
     - objectTemplate: |
         kind: EgressNetworkPolicy
-        apiVersion: v1
+        apiVersion: network.openshift.io/v1
         metadata:
           name: non-prod-egress-policy
           namespace: {{ .Name }}  
@@ -60,7 +60,7 @@ spec:
   templates:
     - objectTemplate: |
         kind: EgressNetworkPolicy
-        apiVersion: v1
+        apiVersion: network.openshift.io/v1
         metadata:
           name: prod-egress-policy
           namespace: {{ .Name }}  

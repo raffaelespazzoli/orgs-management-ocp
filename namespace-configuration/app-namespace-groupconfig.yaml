@@ -12,44 +12,44 @@ spec:
         kind: Namespace
         metadata:
           name: {{ .Name }}-build
-        labels:
-          app: {{ .Name }}
-          team: {{ .Annotations.hierarchy_parent }}
-          type: build
+          labels:
+            app: {{ .Name }}
+            team: {{ .Annotations.hierarchy_parent }}
+            type: build
     - objectTemplate: |
         apiVersion: v1
         kind: Namespace
         metadata:
           name: {{ .Name }}-dev
-        labels:
-          team: {{ .Annotations.hierarchy_parent }}
-          app: {{ .Name }}
-          type: run
-          stage: dev
-        annotations:
-          egressip-ipam-operator.redhat-cop.io/egressipam=egressip-ipam               
+          labels:
+            team: {{ .Annotations.hierarchy_parent }}
+            app: {{ .Name }}
+            type: run
+            stage: dev
+          annotations:
+            egressip-ipam-operator.redhat-cop.io/egressipam: egressip-ipam               
     - objectTemplate: |
         apiVersion: v1
         kind: Namespace
         metadata:
           name: {{ .Name }}-qa
-        labels:
-          team: {{ .Annotations.hierarchy_parent }}
-          app: {{ .Name }}          
-          type: run
-          stage: qa
-        annotations:
-          egressip-ipam-operator.redhat-cop.io/egressipam=egressip-ipam
+          labels:
+            team: {{ .Annotations.hierarchy_parent }}
+            app: {{ .Name }}          
+            type: run
+            stage: qa
+          annotations:
+            egressip-ipam-operator.redhat-cop.io/egressipam: egressip-ipam
     - objectTemplate: |
         apiVersion: v1
         kind: Namespace
         metadata:
           name: {{ .Name }}-prod
-        labels:
-          team: {{ .Annotations.hierarchy_parent }}
-          app: {{ .Name }} 
-          type: run
-          stage: prod
-          size: {{ .Annotations.size }}
-        annotations:
-          egressip-ipam-operator.redhat-cop.io/egressipam=egressip-ipam              
+          labels:
+            team: {{ .Annotations.hierarchy_parent }}
+            app: {{ .Name }} 
+            type: run
+            stage: prod
+            size: {{ .Annotations.size }}
+          annotations:
+            egressip-ipam-operator.redhat-cop.io/egressipam: egressip-ipam              

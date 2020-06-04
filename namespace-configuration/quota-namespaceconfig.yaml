@@ -8,11 +8,11 @@ spec:
       type: build
   templates:  
     - objectTemplate: | 
-        apiVersion: quota.openshift.io/v1
+        apiVersion: v1
         kind: ResourceQuota
         metadata:
           name: {{ .Name }}-quota
-          namespace {{ .Name }}
+          namespace: {{ .Name }}
         spec:
           quota:
             hard: 
@@ -36,7 +36,7 @@ spec:
         kind: ResourceQuota
         metadata:
           name: {{ .Name }}-quota
-          namespace {{ .Name }}
+          namespace: {{ .Name }}
         spec:
           quota:
             hard: 
@@ -60,7 +60,7 @@ spec:
         kind: ResourceQuota
         metadata:
           name: {{ .Name }}-quota
-          namespace {{ .Name }}
+          namespace: {{ .Name }}
         spec:
           quota:
             hard: 
@@ -84,7 +84,7 @@ spec:
         kind: ResourceQuota
         metadata:
           name: {{ .Name }}-quota
-          namespace {{ .Name }}
+          namespace: {{ .Name }}
         spec:
           quota:
             hard: 

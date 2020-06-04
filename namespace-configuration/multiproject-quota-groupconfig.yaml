@@ -27,8 +27,8 @@ spec:
                 type: run
               matchExpressions:
                 - {key: stage, operator: In, values: [dev,qa]}
-                apiVersion: redhatcop.redhat.io/v1alpha1
----                
+---
+apiVersion: redhatcop.redhat.io/v1alpha1                  
 kind: GroupConfig
 metadata:
   name: app-multiproject-quota-medium
